@@ -1,87 +1,42 @@
-brew install fish
-echo "/usr/local/bin/fish" | sudo tee -a /etc/shells
-chsh -s "/usr/local/bin/fish"
-fish
-cd ~/.config/fish
-echo "
-alias proj "cd ~/projects/$1"
-alias l "ls -lAh"
-alias ll "ls -lTAh"
-alias gs "git status"
-alias gl "git pull"
-alias .rc "source ~/.config/fish/config.fish"
-# bass source ~/.nvm/nvm.sh
-# bass export PATH="$PATH:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin"
+# install homebrew if needed
+command -v brew >/dev/null 2>&1 || { echo >&2 "Installing Homebrew Now"; \
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; }
 
-# Customize
-set -g theme_date_format "+%H:%M:%S %a"
-set -g theme_title_display_user no
-set -g theme_title_use_abbreviated_path no
-set -g theme_title_display_process no
-set -g theme_show_exit_status no
-set -g theme_display_git_master_branch yes
-set -g fish_prompt_pwd_dir_length 0
-# set -g theme-display-vi no
-set -g BULLETTRAIN_PROMPT_ORDER \
-      time \
-        dir \
-          nodejs \
-            git
-set -g BULLETTRAIN_NODEJS_SHOW true
+# config
+if brew ls --versions fish > /dev/null; then
+  mkdir -p ~/.config/fish
+  cp -rf config.fish ~/.config/fish
+  brew install fish
+  echo "/usr/local/bin/fish" | sudo tee -a /etc/shells
+  chsh -s "/usr/local/bin/fish"
+  fish
+  cd ~/.config/fish
+  source ~/.config/fish/config.fish
+fi
 
-# Time segment
-set -g BULLETTRAIN_TIME_BG 26323c
-set -g BULLETTRAIN_TIME_FG cacdd1
-
-# Dir segment
-set -g BULLETTRAIN_DIR_BG 4f5b66
-set -g BULLETTRAIN_DIR_FG dbdee0
-
-# Nvm segment
-set -g BULLETTRAIN_NODEJS_BG 7b8894
-set -g BULLETTRAIN_NODEJS_FG 000000
-
-# Git segment
-set -g BULLETTRAIN_GIT_BG c3d9ee
-set -g BULLETTRAIN_GIT_FG 000000
-
-# Time Accent Color
-# set -g BULLETTRAIN_TIME_BG bb002f
-# set -g BULLETTRAIN_TIME_FG cacdd1
-
-# Dir Accent Color
-# set -g BULLETTRAIN_DIR_BG f50057
-# set -g BULLETTRAIN_DIR_FG cacdd1
-
-# Nvm accent color
-# set -g BULLETTRAIN_NODEJS_BG ff5983
-# set -g BULLETTRAIN_NODEJS_FG 000000
-
-# Git Accent Color
-# set -g BULLETTRAIN_GIT_BG ff8db2
-# set -g BULLETTRAIN_GIT_FG 000000">> config.fish
-source ~/.config/fish/config.fish
+# oh-my-fish
 curl -L https://get.oh-my.fish | fish
+
+# fisher
 curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
+
+# bass
 fisher edc/bass
+
+# powerline fonts
 cd ~/projects
 git clone https://github.com/powerline/fonts powerline-fonts
 cd powerline-fonts
 ./install.sh
-# omf install bobthefish
+
+# themes
 omf install https://github.com/kobanyan/bullet-train-fish-theme
 omf theme bullet-train-fish-theme
+
+# nvm
 fisher nvm
-cd ~/.config/fish/functions
-echo "
-function proj
-  set args $argv
-    if test -n "$args"
-            set projArgs ~/projects/$args
-                printf "projArgs: %s\n" $projArgs
-                    cd $projArgs
-                      else
-                              cd ~/projects
-                                end
-                            end
-" >> proj.fish
+
+# functions
+mkdir -p ~/.config/fish/functions
+cd ~/projects/fish
+cp -rf proj.fish ~/.config/fish/functions
