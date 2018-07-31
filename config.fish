@@ -4,6 +4,8 @@ alias gs "git status"
 alias gl "git pull"
 alias .rc "source /Users/stujo04/.config/fish/config.fish"
 alias ah "cd ~/projects/alm/alm-webapp"
+alias git-amend "git commit --amend --no-edit --reset-author"
+alias gd "git diff"
 
 # bass source ~/.nvm/nvm.sh
 # bass export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin
